@@ -11,7 +11,7 @@ use types::Project;
 #[derive(Parser)]
 #[command(name = "edusvg")]
 #[command(version = "0.1.0")]
-#[command(about = "EduSVG — ferramenta de autoria e animação educacional")]
+#[command(about = "EduSVG — ferramenta de autoria e animacao educacional")]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -19,7 +19,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Lê um SVG e lista todas as camadas com ID
+    /// Le um SVG e lista todas as camadas com ID
     Parse {
         svg: String,
     },
@@ -29,6 +29,8 @@ enum Commands {
         config: String,
         #[arg(short, long, default_value = "output.html")]
         output: String,
+        #[arg(long, default_value = "")]
+        runtime: String,
     },
 }
 
@@ -39,7 +41,7 @@ fn main() {
         Commands::Parse { svg } => {
             let content = fs::read_to_string(&svg)
                 .unwrap_or_else(|_| {
-                    eprintln!("Erro: arquivo '{}' não encontrado.", svg);
+                    eprintln!("Erro: arquivo '{}' nao encontrado.", svg);
                     std::process::exit(1);
                 });
 
@@ -48,7 +50,7 @@ fn main() {
                     println!("\n EduSVG Parser");
                     println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                     println!(" Arquivo:    {}", svg);
-                    println!(" Dimensões:  {} × {}", doc.width, doc.height);
+                    println!(" Dimensoes:  {} x {}", doc.width, doc.height);
                     println!(" ViewBox:    {}", doc.viewbox);
                     println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
@@ -57,11 +59,10 @@ fn main() {
                     if ids.is_empty() {
                         println!("\n Nenhum elemento com ID encontrado.");
                         println!(" Dica: nomeie as camadas no Inkscape");
-                        println!("       antes de exportar como SVG.");
                     } else {
                         println!("\n Camadas encontradas ({}):\n", ids.len());
                         for id in &ids {
-                            println!("   → {}", id);
+                            println!("   -> {}", id);
                         }
                     }
                     println!();
@@ -70,24 +71,42 @@ fn main() {
             }
         },
 
-        Commands::Export { svg, config, output } => {
+        Commands::Export { svg, config, output, runtime } => {
             let svg_content = fs::read_to_string(&svg)
                 .unwrap_or_else(|_| {
-                    eprintln!("Erro: SVG '{}' não encontrado.", svg);
+                    eprintln!("Erro: SVG '{}' nao encontrado.", svg);
                     std::process::exit(1);
                 });
 
             let config_content = fs::read_to_string(&config)
                 .unwrap_or_else(|_| {
-                    eprintln!("Erro: config '{}' não encontrado.", config);
+                    eprintln!("Erro: config '{}' nao encontrado.", config);
                     std::process::exit(1);
                 });
+
+            let runtime_js = if runtime.is_empty() {
+                // Tenta encontrar o animator.js relativo ao binario
+                let candidates = [
+                    "../runtime/animator.js",
+                    "runtime/animator.js",
+                    "../../runtime/animator.js",
+                ];
+                candidates.iter()
+                    .find_map(|p| fs::read_to_string(p).ok())
+                    .unwrap_or_default()
+            } else {
+                fs::read_to_string(&runtime)
+                    .unwrap_or_else(|_| {
+                        eprintln!("Aviso: runtime '{}' nao encontrado.", runtime);
+                        String::new()
+                    })
+            };
 
             let doc = svg_parser::parse_svg(&svg_content)
                 .expect("Erro ao parsear SVG");
 
             let project: Project = serde_json::from_str(&config_content)
-                .expect("Erro ao parsear JSON de configuração");
+                .expect("Erro ao parsear JSON de configuracao");
 
             println!("\n EduSVG Export");
             println!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -115,16 +134,16 @@ fn main() {
                             filters.push_str(&anim);
                             filters.push('\n');
                             aplicados += 1;
-                            println!(" ✓ {} — efeito: {}", elem_config.id, effect.tipo);
+                            println!(" ok {} — efeito: {}", elem_config.id, effect.tipo);
                         }
                     } else {
-                        println!(" ⚠ '{}' não encontrado no SVG", elem_config.id);
+                        println!(" aviso '{}' nao encontrado no SVG", elem_config.id);
                     }
                 }
             }
 
             let html = exporters::html::export_html(
-                &svg_content, &doc, &project, &filters
+                &svg_content, &doc, &project, &filters, &runtime_js
             );
 
             fs::write(&output, html)

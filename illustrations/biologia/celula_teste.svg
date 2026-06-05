@@ -1,0 +1,14 @@
+<svg width="680" height="520" viewBox="0 0 680 520"
+  xmlns="http://www.w3.org/2000/svg">
+  <ellipse id="membrana" cx="340" cy="260"
+    rx="200" ry="160" fill="#c5e8d8"/>
+  <ellipse id="nucleo" cx="340" cy="260"
+    rx="60" ry="55" fill="#7090d8"/>
+  <ellipse id="nucleolo" cx="335" cy="255"
+    rx="22" ry="20" fill="#3050a0"/>
+  <g id="mitocondria_1">
+    <ellipse cx="450" cy="200" rx="30" ry="12"
+      fill="#e8883a" transform="rotate(-30 450 200)"/>
+  </g>
+  <circle id="ribossomo_1" cx="480" cy="320" r="10" fill="#60aa60"/>
+</svg>

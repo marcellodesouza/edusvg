@@ -33,8 +33,10 @@ pub fn export_html(
     _doc: &SvgDocument,
     project: &Project,
     filters: &str,
+    runtime_js: &str,
 ) -> String {
     let svg_final = inject_filters_into_svg(svg_content, &project.elementos, filters);
+    let config_json = serde_json::to_string(&project.elementos).unwrap_or_default();
 
     let mut html = String::new();
     html.push_str("<!DOCTYPE html>\n");
@@ -55,6 +57,8 @@ pub fn export_html(
     html.push_str("  <div class=\"container\">\n");
     html.push_str(&format!("    <h1>{}</h1>\n", project.nome));
     html.push_str(&format!("    {}\n", svg_final));
+    html.push_str(&format!("    <script id=\"edusvg-config\" type=\"application/json\">{}</script>\n", config_json));
+    html.push_str(&format!("    <script>{}</script>\n", runtime_js));
     html.push_str("  </div>\n");
     html.push_str("</body>\n");
     html.push_str("</html>");
