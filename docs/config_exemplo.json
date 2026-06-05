@@ -1,0 +1,35 @@
+{
+  "nome": "Neurônio — Estrutura e Animação",
+  "svg_path": "neuronio.svg",
+  "elementos": [
+    {
+      "id": "membrana",
+      "animacao": {
+        "tipo": "organica",
+        "intensidade": 6.0,
+        "velocidade": 7.0,
+        "seed": 4
+      }
+    },
+    {
+      "id": "nucleo",
+      "animacao": {
+        "tipo": "pulsar",
+        "intensidade": 4.0,
+        "velocidade": 5.0
+      },
+      "interacao": {
+        "tipo": "click_reveal",
+        "tooltip": "Núcleo — controla as funções celulares"
+      }
+    },
+    {
+      "id": "axonio",
+      "animacao": {
+        "tipo": "deriva",
+        "intensidade": 3.0,
+        "velocidade": 8.0
+      }
+    }
+  ]
+}
