@@ -55,13 +55,14 @@ fn generate_impulso(_elem: &SvgElement, e: &Effect) -> String {
     )
 }
 
-fn generate_blur(_elem: &SvgElement, e: &Effect) -> String {
+fn generate_blur(elem: &SvgElement, e: &Effect) -> String {
     let dur = e.velocidade;
     let min = e.intensidade * 0.3;
     let max = e.intensidade;
+    let filter_id = format!("blr-{}", elem.id);
     format!(
-        "<feGaussianBlur stdDeviation=\"{min:.1}\">\n  <animate attributeName=\"stdDeviation\" values=\"{min:.1};{max:.1};{min:.1}\" dur=\"{dur}s\" repeatCount=\"indefinite\"/>\n</feGaussianBlur>",
-        dur=dur, min=min, max=max
+        "<filter id=\"{fid}\">\n  <feGaussianBlur stdDeviation=\"{min:.1}\">\n    <animate attributeName=\"stdDeviation\" values=\"{min:.1};{max:.1};{min:.1}\" dur=\"{dur}s\" repeatCount=\"indefinite\"/>\n  </feGaussianBlur>\n</filter>",
+        fid=filter_id, dur=dur, min=min, max=max
     )
 }
 

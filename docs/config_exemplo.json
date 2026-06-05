@@ -1,6 +1,6 @@
 {
-  "nome": "Neurônio — Estrutura e Animação",
-  "svg_path": "neuronio.svg",
+  "nome": "Célula — Estrutura e Animação",
+  "svg_path": "celula_teste.svg",
   "elementos": [
     {
       "id": "membrana",
@@ -17,18 +17,30 @@
         "tipo": "pulsar",
         "intensidade": 4.0,
         "velocidade": 5.0
-      },
-      "interacao": {
-        "tipo": "click_reveal",
-        "tooltip": "Núcleo — controla as funções celulares"
       }
     },
     {
-      "id": "axonio",
+      "id": "nucleolo",
+      "animacao": {
+        "tipo": "blur",
+        "intensidade": 3.0,
+        "velocidade": 4.0
+      }
+    },
+    {
+      "id": "mitocondria_1",
       "animacao": {
         "tipo": "deriva",
-        "intensidade": 3.0,
-        "velocidade": 8.0
+        "intensidade": 8.0,
+        "velocidade": 6.0
+      }
+    },
+    {
+      "id": "ribossomo_1",
+      "animacao": {
+        "tipo": "aparecer",
+        "intensidade": 1.0,
+        "velocidade": 3.0
       }
     }
   ]
